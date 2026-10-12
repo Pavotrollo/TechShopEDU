@@ -1,0 +1,632 @@
+/* ==========================================================
+   PANTALLA PRINCIPAL (catálogo) — TechShop EDU
+   Se carga DESPUÉS de Bootstrap 5, por eso sobrescribe sus estilos.
+   ========================================================== */
+
+:root {
+  --tinta: #14212e;
+  --placa: #0e6b52;
+  --placa-oscura: #0a523f;
+  --estano: #d5dbdf;
+  --banco: #eef1ef;
+  --blanco: #ffffff;
+  --azul: #1f6fd1;
+  --alerta: #b5471f;
+  --radio: 14px;
+  --fuente-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --fuente-texto: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: var(--banco);
+}
+
+img { display: block; max-width: 100%; }
+
+h1, h2, h3 { font-family: var(--fuente-titulo); font-weight: 700; line-height: 1.15; margin: 0; }
+
+a { color: inherit; }
+
+:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Barra superior (navbar de Bootstrap con tu estilo) ---------- */
+.barra {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem;
+  padding: 0.85rem clamp(1rem, 4vw, 3rem);
+  background: var(--tinta);
+  color: var(--blanco);
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--fuente-titulo);
+  font-weight: 800; font-size: 1.35rem;
+  text-decoration: none;
+  margin-right: auto;
+}
+.logo img { border-radius: 10px; }
+.logo__edu {
+  padding: 0.05rem 0.45rem;
+  font-size: 0.85em;
+  color: var(--blanco); background: var(--azul); border-radius: 6px;
+}
+
+.barra .navbar-nav { gap: 0.25rem 1.25rem; }
+.barra .nav-link {
+  padding-left: 0; padding-right: 0;
+  color: var(--estano); font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+.barra .nav-link:hover,
+.barra .nav-link:focus { color: var(--blanco); }
+.barra .nav-link.active { color: var(--blanco); border-bottom-color: var(--azul); }
+
+.barra .navbar-toggler { border-color: rgba(255, 255, 255, 0.45); }
+.barra .navbar-toggler:focus { box-shadow: none; outline: 3px solid var(--azul); outline-offset: 2px; }
+
+.btn-carrito {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  border: 2px solid var(--estano); border-radius: 999px;
+  text-decoration: none; font-weight: 700;
+}
+.btn-carrito:hover { background: var(--blanco); color: var(--tinta); }
+.badge {
+  min-width: 1.5rem; padding: 0 0.4rem;
+  text-align: center; font-size: 0.85rem; font-weight: 700; line-height: 1.5rem;
+  color: var(--blanco); background: var(--azul); border-radius: 999px;
+}
+
+/* ---------- Portada ---------- */
+.portada {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  margin: clamp(1rem, 3vw, 2rem) clamp(1rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  color: var(--blanco);
+  background: var(--placa);
+  border-radius: 24px;
+}
+.portada h1 { font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; }
+.portada p { max-width: 46ch; margin: 1.1rem 0 1.75rem; font-size: 1.1rem; color: #d9efe7; }
+.portada__imagen { margin: 0; }
+.portada__imagen img {
+  width: 100%; aspect-ratio: 16 / 10; object-fit: cover;
+  border-radius: var(--radio);
+  border: 4px solid rgba(255, 255, 255, 0.85);
+}
+
+/* ---------- Botones (se duplica la clase para ganarle a .btn de Bootstrap) ---------- */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.4rem;
+  font: 700 1rem var(--fuente-texto);
+  text-align: center; text-decoration: none;
+  border: 0; border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+}
+.btn:active { transform: translateY(1px); }
+.btn.btn--primario { background: var(--blanco); color: var(--placa-oscura); }
+.btn.btn--primario:hover { background: var(--estano); color: var(--placa-oscura); }
+.btn.btn--agregar { width: 100%; background: var(--placa); color: var(--blanco); }
+.btn.btn--agregar:hover,
+.btn.btn--agregar:active { background: var(--placa-oscura); color: var(--blanco); }
+
+/* ---------- Catálogo ---------- */
+.catalogo { padding: 1rem clamp(1rem, 4vw, 3rem) 3rem; }
+.catalogo__cabecera {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: space-between; gap: 1rem;
+  margin-bottom: 1rem;
+}
+.catalogo h2 { font-size: 2rem; }
+
+.buscador input {
+  width: min(100%, 22rem);
+  padding: 0.7rem 1rem;
+  font: 1rem var(--fuente-texto); color: var(--tinta);
+  background: var(--blanco);
+  border: 2px solid var(--estano); border-radius: 10px;
+}
+.buscador input:focus { border-color: var(--azul); outline: none; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
+.filtro {
+  padding: 0.5rem 1rem;
+  font: 500 0.95rem var(--fuente-texto); color: var(--tinta);
+  background: var(--blanco);
+  border: 2px solid var(--estano); border-radius: 999px;
+  cursor: pointer;
+}
+.filtro:hover { border-color: var(--placa); }
+.filtro.is-activo { color: var(--blanco); background: var(--tinta); border-color: var(--tinta); }
+
+.vacio {
+  padding: 1.25rem; margin: 0 0 1.5rem;
+  background: var(--blanco); border-left: 5px solid var(--alerta); border-radius: 8px;
+}
+
+/* ---------- Tarjetas de producto (card de Bootstrap con tu estilo) ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.producto {
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: var(--blanco);
+  border: 1px solid var(--estano);
+  border-radius: var(--radio);
+}
+.producto > img {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  border-bottom: 1px solid var(--estano);
+}
+.producto__img--contener { object-fit: contain !important; padding: 0.5rem; background: var(--blanco); }
+
+.producto__cuerpo { display: flex; flex: 1; flex-direction: column; gap: 0.6rem; padding: 1.1rem; }
+.producto h3 { font-size: 1.25rem; }
+.producto p { flex: 1; margin: 0; font-size: 0.95rem; color: #46566a; }
+
+.etiqueta {
+  align-self: flex-start;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem; font-weight: 700; color: var(--placa-oscura);
+  background: #dff1ea; border-radius: 6px;
+}
+
+/* Selector de variante (color, capacidad, versión...) */
+.variante label {
+  display: block; margin-bottom: 0.2rem;
+  font-size: 0.85rem; font-weight: 700; color: #46566a;
+}
+.variante .form-select {
+  padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+  font: 0.95rem var(--fuente-texto); color: var(--tinta);
+  border: 2px solid var(--estano); border-radius: 10px;
+}
+.variante .form-select:focus { border-color: var(--azul); box-shadow: none; outline: 3px solid var(--azul); outline-offset: 2px; }
+
+.producto__pie { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-top: 0.4rem; }
+.precio { font-family: var(--fuente-titulo); font-size: 1.6rem; }
+.precio small { font: 500 0.8rem var(--fuente-texto); color: #46566a; }
+.stock { font-size: 0.85rem; font-weight: 500; color: var(--placa-oscura); }
+.stock--bajo { color: var(--alerta); font-weight: 700; }
+
+/* Clase que usa el JS para ocultar productos al filtrar */
+.producto[hidden] { display: none; }
+
+/* ---------- Aviso al agregar (toast de Bootstrap) ---------- */
+.toast { border: 2px solid var(--tinta); border-radius: 12px; font-family: var(--fuente-texto); }
+.toast-header strong { font-family: var(--fuente-titulo); color: var(--tinta); }
+.toast .btn { padding: 0.4rem 0.9rem; font-size: 0.9rem; }
+
+/* ---------- Pie ---------- */
+.pie { padding: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--estano); background: var(--tinta); }
+.pie p { margin: 0; }
+
+/* ==========================================================
+   --- CARRITO ---
+   ========================================================== */
+.carrito-seccion {
+  margin: 0 2rem 3rem;
+  padding: 2rem;
+  background: var(--blanco);
+  border: 1px solid var(--estano);
+  border-radius: var(--radio);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.carrito-seccion h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--tinta);
+}
+
+.carrito__contenido {
+  margin-bottom: 1.5rem;
+}
+
+.carrito-seccion .vacio {
+  text-align: center;
+  border-left: none;
+  background: transparent;
+  color: #46566a;
+  margin: 0;
+  padding: 1rem;
+}
+
+.carrito__totales {
+  padding-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-top: 2px solid var(--banco);
+  font-family: var(--fuente-titulo);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.carrito__totales .d-flex {
+  align-items: center;
+}
+
+.btn--checkout {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  text-align: center;
+  background-color: var(--placa);
+  color: var(--blanco);
+  transition: background-color 0.2s ease, opacity 0.2s ease, cursor 0.2s ease;
+}
+
+.btn--checkout:hover {
+  background-color: var(--placa-oscura);
+  color: var(--blanco);
+}
+
+#btn-checkout.disabled,
+#btn-checkout[aria-disabled="true"] {
+  background-color: var(--estano);
+  color: #8b959e;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+  transform: none !important;
+}
+
+/* Tabla del carrito (la genera js/carrito.js) */
+.carrito__tabla { width: 100%; border-collapse: collapse; }
+.carrito__tabla th {
+  padding: 0 0.75rem 0.75rem;
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: #46566a;
+  border-bottom: 2px solid var(--banco);
+}
+.carrito__tabla td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--banco);
+}
+.carrito__tabla tbody tr:last-child td { border-bottom: 0; }
+
+.carrito__producto { display: flex; align-items: center; gap: 0.9rem; }
+.carrito__producto img {
+  flex-shrink: 0;
+  width: 64px; height: 64px; object-fit: contain;
+  background: var(--banco); border-radius: 10px;
+}
+.carrito__nombre { display: block; font-weight: 700; }
+.carrito__variante { display: block; color: #46566a; }
+.carrito__aviso { display: block; margin-top: 0.25rem; font-size: 0.8rem; font-weight: 700; color: var(--alerta); }
+.carrito__subtotal { font-weight: 700; white-space: nowrap; }
+.carrito__precio { white-space: nowrap; }
+.carrito__acciones { text-align: right; }
+
+/* Selector de cantidad: − [ 2 ] + */
+.cantidad {
+  display: inline-flex; align-items: center;
+  overflow: hidden;
+  border: 2px solid var(--estano); border-radius: 10px;
+}
+.cantidad__btn {
+  width: 2.25rem; height: 2.25rem;
+  font-size: 1.1rem; font-weight: 700; color: var(--tinta);
+  background: var(--banco); border: 0;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.cantidad__btn:hover:not(:disabled) { background: var(--estano); }
+.cantidad__btn:disabled { color: #a3acb4; cursor: not-allowed; }
+.cantidad__input {
+  width: 3rem; height: 2.25rem;
+  font: 700 1rem var(--fuente-texto); color: var(--tinta); text-align: center;
+  border: 0;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.cantidad__input::-webkit-outer-spin-button,
+.cantidad__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.carrito__quitar {
+  padding: 0.35rem 0.75rem;
+  font: 700 0.9rem var(--fuente-texto); color: var(--alerta);
+  background: none; border: 2px solid transparent; border-radius: 8px;
+  cursor: pointer;
+}
+.carrito__quitar:hover { border-color: var(--alerta); }
+
+.carrito__nota { margin: -0.75rem 0 1.5rem; font-size: 0.9rem; color: #46566a; }
+
+@media (max-width: 640px) {
+  .carrito-seccion { margin: 1rem; padding: 1.25rem; }
+  /* Encabezados ocultos a la vista pero disponibles para lectores de pantalla */
+  .carrito__tabla thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);
+  }
+  .carrito__tabla tr {
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--banco);
+  }
+  .carrito__tabla tbody tr:last-child { border-bottom: 0; }
+  .carrito__tabla td { padding: 0; border: 0; }
+  .carrito__tabla td:first-child { grid-column: 1 / -1; }
+  .carrito__tabla td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-weight: 500; color: #46566a;
+  }
+}
+
+/* ==========================================================
+   --- CHECKOUT ---
+   ========================================================== */
+
+/* Contenido Principal */
+.contenido-principal {
+  flex: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  float: none;
+  padding: 0 1rem;
+}
+
+.contenido-principal .titulo {
+  font-family: var(--fuente-titulo);
+  font-size: 3.5rem;
+  color: var(--tinta);
+  text-align: center;
+  margin: 1.3rem;
+}
+
+.columnas {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 2.5rem;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.columna-envio {
+  flex: 0 0 55%;
+  max-width: 53%;
+  padding: 0;
+}
+
+.columna-resumen {
+  flex: 0 0 35%;
+  max-width: 40%;
+  padding: 0;
+}
+
+.formulario {
+  background-color: var(--blanco);
+  border: 1px solid var(--estano);
+  border-radius: var(--radio);
+  padding: 2.2rem 2.2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  height: 100%;
+}
+
+.formulario .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Encabezados dentro de los formularios */
+.formulario h3,
+.resumen-pedido h3 {
+  font-family: var(--fuente-titulo);
+  font-size: 1.5rem;
+  color: var(--tinta);
+  margin-top: 0;
+  margin-bottom: 1.6rem;
+  border-bottom: 3px solid var(--placa);
+  padding-bottom: 0.7rem;
+}
+
+/* Inputs y campos de envío */
+.campo-envio {
+  margin-bottom: 1rem;
+}
+
+.campo-envio label {
+  display: block;
+  font-family: var(--fuente-texto);
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--tinta);
+  margin-bottom: 0.3rem;
+}
+
+.input-envio {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--fuente-texto);
+  font-size: 0.95rem;
+  color: var(--tinta);
+  background-color: var(--blanco);
+  border: 2px solid var(--estano);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input-envio:focus {
+  border-color: var(--placa);
+}
+
+/*Filas internas del formulario */
+.formulario {
+  margin-right: -0.3rem;
+  margin-left: -0.3rem;
+}
+
+.formulario .row>[class*="col-"] {
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+/* Métodos de pago ordenados */
+.metodos-pago {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.7rem;
+}
+
+.metodos-pago label {
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--tinta);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+input.input-metodos {
+  accent-color: var(--placa);
+  transform: scale(1.1);
+}
+
+/* Estilo de los Totales */
+.totales {
+  border-top: 2px solid var(--banco);
+  padding-top: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.totales span,
+.totales strong {
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  color: var(--tinta);
+}
+
+.total-final {
+  border-top: 1px dashed var(--estano);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.total-final strong {
+  font-family: var(--fuente-titulo);
+}
+
+/* 10. Sección de Descuento */
+.descuento {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.descuento input {
+  flex: 1;
+  padding: 0.75rem 0.9rem;
+  border: 2px solid var(--estano);
+  border-radius: 10px;
+  outline: none;
+  font-family: var(--fuente-texto);
+}
+
+#btn-aplicar {
+  background-color: var(--estano);
+  color: var(--tinta);
+  border: none;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  font-family: var(--fuente-texto);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+#btn-aplicar:hover {
+  background-color: #c5ccd3;
+}
+
+/* Botón del Pago */
+#btn-pagar {
+  display: block;
+  width: 100%;
+  background-color: var(--placa);
+  color: var(--blanco);
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  font-family: var(--fuente-titulo);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+#btn-pagar:hover {
+  background-color: var(--placa-oscura);
+}
+
+/*Adaptación responsiva para celulares */
+
+
+
+
+
+/* ---------- Adaptación a pantallas pequeñas ---------- */
+@media (max-width: 760px) {
+  .portada { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
+
+/* Checkout */
+@media (max-width: 992px) {
+    /* Forzamos que la fila permita que los elementos bajen de línea */
+    .columnas {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .columna-envio, 
+    .columna-resumen {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 2rem;
+    }
+}
